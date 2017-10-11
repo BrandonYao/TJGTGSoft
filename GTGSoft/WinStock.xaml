@@ -1,0 +1,30 @@
+﻿<Window x:Class="GTGSoft.WinStock"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WinStock" Height="300" Width="500" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="药品名称：" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBlock Name="tbDrugName" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Grid.Column="1"></TextBlock>
+
+        <TextBlock Grid.Row="1" Text="药品规格：" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBlock Grid.Row="1" Name="tbDrugSpec" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Grid.Column="1"></TextBlock>
+
+        <TextBlock Grid.Row="2" Text="药品厂家：" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"></TextBlock>
+        <TextBlock Grid.Row="2" Name="tbDrugFactory" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Grid.Column="1"></TextBlock>
+
+        <TextBox Grid.Row="3" Grid.ColumnSpan="2" Margin="5" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="40" FontWeight="Bold" Name="tbNum"></TextBox>
+        <Button Grid.Row="4" Grid.ColumnSpan="2" Margin="5" Content="确定" Width="100" Click="Button_Click"></Button>
+    </Grid>
+</Window>

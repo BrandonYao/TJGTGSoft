@@ -1,0 +1,328 @@
+﻿<UserControl x:Class="GTGSoft.UCAuto"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GTGSoft"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1200" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <local:ColorConverter x:Key="myConverter"></local:ColorConverter>
+    </UserControl.Resources>
+    <UserControl.Background>
+        <RadialGradientBrush RadiusX="1" RadiusY="0.8" GradientOrigin="0.6,0.7">
+            <GradientStop Color="#FF01F0EB" Offset="0.2"></GradientStop>
+            <GradientStop Color="#FF01C8F3" Offset="0.5"></GradientStop>
+            <GradientStop Color="#FF0197EB" Offset="1"></GradientStop>
+        </RadialGradientBrush>
+    </UserControl.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+            
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,10,5,0" FontSize="18" FontWeight="Bold">单号检索</TextBlock>
+                <TextBox Grid.Column="1" Grid.ColumnSpan="2" Margin="5,15,5,0" Name="tbCode" PreviewMouseUp="tbCode_PreviewMouseUp" LostFocus="tbCode_LostFocus"></TextBox>
+                <Button Grid.Column="3" Grid.RowSpan="2" Margin="10,20" FontWeight="Bold" Name="tbRefresh" Click="tbRefresh_Click">刷 新</Button>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Background="LightBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20,5">配药</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1" Background="LightCoral" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20,5">退药</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="2" Background="Khaki" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20,5">调拨</TextBlock>
+            </Grid>
+            
+            <TabControl Grid.Row="1" Name="tcList" Padding="1">
+                <TabItem Header=" 待 配 " FontSize="18">
+                        <!--local:GridLineDecorator GridLineBrush="Black"-->
+                        <ListView Margin="5" Name="lvWait" FontSize="16">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="单 号" Width="120" DisplayMemberBinding="{Binding Path=PrescNo}"></GridViewColumn>
+                                        <GridViewColumn Header="名 称" Width="100" DisplayMemberBinding="{Binding Path=PatName}"></GridViewColumn>
+                                        <!-- Header="窗 口" Width="100" DisplayMemberBinding="{Binding Path=WindowName}"></GridViewColumn-->
+                                        <GridViewColumn Width="70">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Width="60" Margin="1" Click="btStart_Click" Tag="{Binding Path=PrescNo}" Content="开始" Visibility="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem},Converter={StaticResource boolToVisibilityConverter}}"></Button>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="70">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Width="60" Margin="1" Click="btDelete_Click" Tag="{Binding Path=PrescNo}" Content="删除" Visibility="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem},Converter={StaticResource boolToVisibilityConverter}}"></Button>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <Binding Converter="{StaticResource myConverter}"></Binding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Margin" Value="1"/>
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <Style.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="true" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="Red"></Setter>
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            </ListView>
+                        <!--/local:GridLineDecorator-->
+                </TabItem>
+                <TabItem Header=" 超 时 "  FontSize="18">
+                        <ListView Margin="5" Name="lvOverTime">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="单 号" Width="120" DisplayMemberBinding="{Binding Path=PrescNo}"></GridViewColumn>
+                                        <GridViewColumn Header="名 称" Width="100" DisplayMemberBinding="{Binding Path=PatName}"></GridViewColumn>
+                                        <!--GridViewColumn Header="窗 口" Width="100" DisplayMemberBinding="{Binding Path=WindowName}"></GridViewColumn-->
+                                        <GridViewColumn Width="70">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Margin="1" Width="60" Click="btStart_Over_Click" Tag="{Binding Path=PrescNo}" Content="开始" Visibility="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem},Converter={StaticResource boolToVisibilityConverter}}"></Button>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="70">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Margin="1" Width="60" Click="btDelete_Over_Click" Tag="{Binding Path=PrescNo}" Content="删除" Visibility="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem},Converter={StaticResource boolToVisibilityConverter}}"></Button>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <Binding Converter="{StaticResource myConverter}"></Binding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Margin" Value="1"/>
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <Style.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="true" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="Red"></Setter>
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                </TabItem>
+                <TabItem Header=" 完 成 " FontSize="18" Visibility="Hidden">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <ListView Name="lvDone">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="单 号" Width="118" DisplayMemberBinding="{Binding Path=PrescNo}"></GridViewColumn>
+                                        <GridViewColumn Header="姓名/科室" Width="80" DisplayMemberBinding="{Binding Path=PName}"></GridViewColumn>
+                                        <GridViewColumn Header="窗 口" Width="60" DisplayMemberBinding="{Binding Path=WindowNo}"></GridViewColumn>
+                                        <GridViewColumn Width="60">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Width="45" Margin="1" Click="btRePei_Click" Tag="{Binding Path=PrescNo}" Content="重发" Visibility="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListViewItem},Converter={StaticResource boolToVisibilityConverter}}"></Button>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Margin" Value="1"/>
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <Style.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsSelected" Value="true" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="Red"></Setter>
+                                        </MultiTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+            
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Margin="10" FontSize="24" FontWeight="Bold" Name="btClear" Click="btClear_Click" Visibility="Collapsed">清 空</Button>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="100" Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">单 号</TextBlock>
+                <TextBox Grid.Column="1" Margin="8" Name="tbOrderNo" IsReadOnly="True"></TextBox>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">姓名/科室</TextBlock>
+                <TextBox Grid.Column="3" Margin="8" Name="tbName"></TextBox>
+
+                <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">窗 口</TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="8" Name="tbWindowName"></TextBox>
+                <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">单据类型</TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="3" Margin="8" Name="tbType"></TextBox>
+                
+                <StackPanel Grid.Column="4" Grid.RowSpan="2" Orientation="Horizontal" Name="spMacs">
+                </StackPanel>
+            </Grid>
+
+                <ListView Margin="5" Grid.Row="1" Name="lvIn" DataContext="{Binding}" ItemsSource="{Binding}" FontSize="16" SelectionChanged="lvIn_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="库存" Width="60" DisplayMemberBinding="{Binding Path=DrugStock}"></GridViewColumn>
+                            <GridViewColumn Header="储位编号" Width="100" DisplayMemberBinding="{Binding Path=PosCode}"></GridViewColumn>
+
+                            <GridViewColumn Header="数量" Width="100" DisplayMemberBinding="{Binding Path=NumString}"></GridViewColumn>
+                            <!--GridViewColumn Header="药品编码" Width="100" DisplayMemberBinding="{Binding Path=DrugOnlyCode}"></GridViewColumn-->
+                                <GridViewColumn Header="药品名称" Width="200" DisplayMemberBinding="{Binding Path=DrugName}"></GridViewColumn>
+                                <GridViewColumn Header="药品规格" Width="150" DisplayMemberBinding="{Binding Path=DrugSpec}"></GridViewColumn>
+                                <GridViewColumn Header="药品厂家" Width="100" DisplayMemberBinding="{Binding Path=DrugFactory}"></GridViewColumn>
+                               
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <Binding Converter="{StaticResource myConverter}"></Binding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Margin" Value="1"/>
+                            <Setter Property="FontSize" Value="18"/>
+                            <Style.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="true" />
+                                    </MultiTrigger.Conditions>
+                                    <!--Setter Property="Background" Value="Red"></Setter-->
+                                </MultiTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <ListView Margin="5" Grid.Row="2" Name="lvOut" DataContext="{Binding}" ItemsSource="{Binding}" FontSize="16">
+                    <ListView.View>
+                        <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="库存" Width="60" DisplayMemberBinding="{Binding Path=DrugStock}"></GridViewColumn>
+                            <GridViewColumn Header="设备编号" Width="60" DisplayMemberBinding="{Binding Path=MacCode}"></GridViewColumn>
+                                <!--<GridViewColumn Header="储位编号" Width="60" DisplayMemberBinding="{Binding Path=PosCode}"></GridViewColumn>-->
+
+                            <GridViewColumn Header="数量" Width="100" DisplayMemberBinding="{Binding Path=NumString}"></GridViewColumn>
+                            <!--GridViewColumn Header="药品编码" Width="100" DisplayMemberBinding="{Binding Path=DrugOnlyCode}"></GridViewColumn-->
+                                <GridViewColumn Header="药品名称" Width="200" DisplayMemberBinding="{Binding Path=DrugName}"></GridViewColumn>
+                                <GridViewColumn Header="药品规格" Width="150" DisplayMemberBinding="{Binding Path=DrugSpec}"></GridViewColumn>
+                                <GridViewColumn Header="药品厂家" Width="100" DisplayMemberBinding="{Binding Path=DrugFactory}"></GridViewColumn>
+                                
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <Binding Converter="{StaticResource myConverter}"></Binding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Margin" Value="1"/>
+                            <Setter Property="FontSize" Value="18"/>
+                            <Style.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="true" />
+                                    </MultiTrigger.Conditions>
+                                    <!--Setter Property="Background" Value="Red"></Setter-->
+                                </MultiTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Background="LightCoral" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,3">正在调配</TextBlock>
+                <TextBlock Grid.Column="1" Background="LightBlue" HorizontalAlignment="Center" VerticalAlignment="Bottom" Padding="10,3" Margin="16,0,16,2">其他设备</TextBlock>
+                <TextBlock Grid.Row="1" Background="Khaki" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,3">等待调配</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="1"  Background="Gray" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10,3">机外药品</TextBlock>
+                <TextBlock Grid.Row="2" Background="LimeGreen" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="10,3" Margin="16,2,16,0">调配完成</TextBlock>
+
+                <Button Grid.Column="2" Grid.RowSpan="3" Width="100" Margin="10" Name="btConfirm" Click="btConfirm_Click">确认取药</Button>
+                <Button Grid.Column="3" Grid.RowSpan="3" Width="100" Margin="10" Name="btContinue" Click="btContinue_Click">继续旋转</Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
