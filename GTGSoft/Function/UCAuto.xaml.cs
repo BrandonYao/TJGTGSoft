@@ -887,9 +887,9 @@ order by dp.maccode,dp.poscode,pd.doflag";
 
             RefreshList();
 
-            timer_Presc.Interval = TimeSpan.FromSeconds(10);
+            timer_Presc.Interval = TimeSpan.FromSeconds(3);
             timer_Presc.Tick += new EventHandler(timer_Presc_Tick);
-            //timer_Presc.Start();
+            timer_Presc.Start();
 
             timer_SS.Interval = TimeSpan.FromSeconds(0.5);
             timer_SS.Tick += new EventHandler(timer_SS_Tick);
